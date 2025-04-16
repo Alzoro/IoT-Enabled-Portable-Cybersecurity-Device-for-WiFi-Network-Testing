@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Device Scanner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Network Device Scanner</h2>
+    <div class="container">
+        <button class="btn" onclick="scanDevices()">Scan Devices</button>
+        <p id="deviceStatus">No scan performed</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>IP Address</th>
+                    <th>MAC Address</th>
+                </tr>
+            </thead>
+            <tbody id="deviceTableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        function scanDevices() {
+            document.getElementById("deviceStatus").innerText = "Scanning...";
+
+            fetch("/scan_devices")
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById("deviceTableBody");
+                    tableBody.innerHTML = "";
+
+                    if (data.devices.length === 0) {
+                        document.getElementById("deviceStatus").innerText = "No devices found.";
+                        return;
+                    }
+
+                    data.devices.forEach(device => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${device.ip}</td>
+                            <td>${device.mac}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+
+                    document.getElementById("deviceStatus").innerText = "Scan complete.";
+                })
+                .catch(error => {
+                    console.error("Error scanning devices:", error);
+                    document.getElementById("deviceStatus").innerText = "Scan failed. Try again.";
+                });
+        }
+    </script>
+</body>
+</html>

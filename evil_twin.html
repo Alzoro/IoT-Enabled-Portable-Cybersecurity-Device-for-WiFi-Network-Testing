@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evil Twin Attack</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        function startEvilTwin() {
+            let ssid = document.getElementById("ssid").value;
+            let password = document.getElementById("password").value;
+            let openNetwork = document.getElementById("openNetwork").checked;
+
+            fetch("/start_evil_twin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ssid: ssid, password: password, open: openNetwork })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                alert("Error starting Evil Twin AP!");
+                console.error("Error:", error);
+            });
+        }
+
+        function downloadFile() {
+            window.location.href = "/download_credentials";  // 🟢 Now works correctly!
+        }
+    </script>
+</head>
+<body>
+    <h2>Evil Twin Attack</h2>
+    <div class="container">
+        <input type="text" id="ssid" placeholder="Enter SSID"><br>
+        <input type="text" id="password" placeholder="Enter Password"><br>
+        <div class="toggle-container">
+            <span class="toggle-label">Open Network (No Password)</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="openNetwork">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <button class="btn" onclick="startEvilTwin()">Start Evil Twin</button>
+        <div class="download-container">
+            <button class="btn" onclick="downloadFile()">Download Credentials</button>
+        </div>
+    </div>
+</body>
+</html>

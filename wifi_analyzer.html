@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFi Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+
+function fetchWiFiStatus() {
+    let networkName = document.getElementById("ssid").value;
+    if (!networkName) return;
+
+    fetch(`/get_signal?ssid=${networkName}`)
+    .then(response => response.json())
+    .then(data => {
+        if (!data.rssi) {
+            document.getElementById('wifi-status').innerText = "Error fetching signal strength!";
+            return;
+        }
+
+        let signalStrength = data.rssi;
+        let percentage = Math.max(0, Math.min(100, (signalStrength + 100) * 1.25)); 
+
+        // Color logic: Green for strong, Yellow for medium, Red for weak
+        let color;
+        if (signalStrength >= -50) color = "green";  // Strong signal
+        else if (signalStrength >= -70) color = "orange";  // Medium signal
+        else color = "red";  // Weak signal
+
+        document.getElementById('wifi-status').innerText = `Connected to: ${networkName}`;
+        document.getElementById('signal-strength').innerText = `Signal Strength: ${signalStrength} dBm`;
+        document.getElementById('signal-bar').style.width = percentage + "%";
+        document.getElementById('signal-bar').style.backgroundColor = color;
+
+    })
+    .catch(error => {
+        document.getElementById('wifi-status').innerText = "Error fetching signal strength!";
+        console.error("Error:", error);
+    });
+}
+
+// Automatically fetch signal strength every 1 second
+setInterval(fetchWiFiStatus, 1000);
+
+
+function scanNetworks() {
+    document.getElementById("wifi-status").innerText = "Scanning for networks...";
+    fetch("/scan")
+    .then(response => response.json())
+    .then(data => {
+        let ssidDropdown = document.getElementById("ssid");
+        ssidDropdown.innerHTML = "<option value=''>Select a network</option>";
+        
+        if (data.networks.length === 0) {
+            document.getElementById("wifi-status").innerText = "No networks found.";
+            return;
+        }
+
+        data.networks.forEach(network => {
+            let option = document.createElement("option");
+            option.value = network.ssid;
+            option.textContent = `${network.ssid} (Signal: ${network.rssi} dBm)`;
+            ssidDropdown.appendChild(option);
+        });
+
+        document.getElementById("wifi-status").innerText = "Select a network from the list.";
+    })
+    .catch(error => {
+        document.getElementById("wifi-status").innerText = "Error scanning networks!";
+        console.error("Error:", error);
+    });
+}
+    </script>
+</head>
+<body>
+    <h1>WiFi Analyzer</h1>
+    <div class="container">
+        <button class="btn" onclick="scanNetworks()">Scan Networks</button>
+        <br><br>
+        <select id="ssid" onchange="fetchWiFiStatus()">
+            <option value="">Select a network</option>
+        </select>
+        <br><br>
+        <div id="wifi-status">Select a network to view signal strength</div>
+        <div id="wifi-container">
+            <div id="signal-strength"></div>
+            <div class="signal-bar" id="signal-bar"></div>
+        </div>
+    </div>
+</body>
+</html>

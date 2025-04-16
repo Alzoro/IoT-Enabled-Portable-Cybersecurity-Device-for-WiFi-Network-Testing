@@ -1,0 +1,214 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: black;
+    color: rgb(8, 211, 8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+h1 {
+    font-size: 6em;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+h2 {
+    font-size: 3em;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.button {
+    border: 3px solid rgb(8, 211, 8);
+    color: red;
+    font-size: 2.5em;
+    padding: 25px 50px;
+    background: none;
+    cursor: pointer;
+    width: 280px;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: rgb(0, 0, 0);
+    color: rgb(8, 211, 8);
+}
+
+.container {
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(8, 211, 8, 0.5);
+    max-width: 600px;
+    width: 100%;
+}
+
+.signal-bar {
+    width: 100%;
+    height: 30px;
+    background-color: red;
+    border-radius: 5px;
+    margin-top: 20px;
+    transition: width 0.5s;
+}
+
+.wifi-button, .btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    color: black;
+    background-color: rgb(8, 211, 8);
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#ssid,#password {
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: none;
+    background-color: black;
+    color: rgb(8, 211, 8);
+    box-shadow: 0px 0px 5px rgba(8, 211, 8, 0.7);
+    outline: none;
+    cursor: pointer;
+}
+
+#ssid option {
+    background-color: #222;
+    color: rgb(8, 211, 8);
+}
+
+#wifi-status {
+    margin-top: 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.btn {
+    background-color: rgb(8, 211, 8);
+    color: black;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+    font-size: 1.2em;
+    border-radius: 5px;
+}
+.btn:hover {
+    background-color: rgb(5, 5, 5);
+    color: rgb(8, 211, 8);
+}
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+table, th, td {
+    border: 1px solid rgb(8, 211, 8);
+}
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+input, select {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid rgb(8, 211, 8);
+    background: black;
+    color: white;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+}
+.toggle-label {
+    margin-right: 10px;
+}
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+}
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: red;
+    transition: 0.4s;
+    border-radius: 25px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 17px;
+    width: 17px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: green;
+}
+input:checked + .slider:before {
+    transform: translateX(25px);
+}
+
+.download-container {
+    margin-top: 10px;
+}
+
+.wrapper {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+  }
+  
+.log-box {
+    position: relative;
+    top: 10%;
+    left: 65%;
+    width: 500px;
+    height: 700px;
+    padding: 20px;
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(8, 211, 8, 0.5);
+    overflow-y: auto;
+}
+  
+#logContent {
+    max-height: 90vh;
+    overflow-y: auto;
+  }

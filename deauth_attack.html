@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deauth Attack</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrapper">
+    <div class="log-box" id="logBox">
+      <h3>Attack Log</h3>
+      <div id="logContent"></div>
+    </div>
+
+    <div class="main-content">
+      <h1>Deauth Attack</h1>
+      <div class="container">
+        <h3>Select SSID for Deauth Attack</h3>
+        <button class="btn" onclick="scanNetworks()">Scan Networks</button>
+        <p id="wifi-status">Press "Scan Networks" to search.</p>
+        <select id="ssid">
+          <option value="">Select SSID</option>
+        </select>
+        <button class="btn" onclick="startDeauth()">Start Deauth</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function appendLog(message) {
+      const logBox = document.getElementById("logContent");
+      const entry = document.createElement("p");
+      entry.textContent = message;
+      logBox.appendChild(entry);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function scanNetworks() {
+      const statusElement = document.getElementById("wifi-status");
+      statusElement.innerText = "Scanning for networks...";
+      appendLog("Scanning for nearby networks...");
+
+      fetch("/scan")
+        .then(response => response.json())
+        .then(data => {
+          const ssidDropdown = document.getElementById("ssid");
+          ssidDropdown.innerHTML = "<option value=''>Select a network</option>";
+
+          if (data.networks.length === 0) {
+            statusElement.innerText = "No networks found.";
+            appendLog("No networks found.");
+            return;
+          }
+
+          data.networks.forEach(network => {
+            const option = document.createElement("option");
+            option.value = network.ssid;
+            option.textContent = `${network.ssid} (Signal: ${network.rssi} dBm)`;
+            ssidDropdown.appendChild(option);
+          });
+
+          statusElement.innerText = "Select a network from the list.";
+          appendLog(`Found ${data.networks.length} networks.`);
+        })
+        .catch(error => {
+          statusElement.innerText = "Error scanning networks!";
+          appendLog("Error while scanning.");
+          console.error("Scan error:", error);
+        });
+    }
+
+    function startDeauth() {
+      const ssid = document.getElementById("ssid").value;
+      if (!ssid) {
+        alert("Please select an SSID!");
+        return;
+      }
+
+      appendLog(`Starting deauth attack on SSID: ${ssid}`);
+      fetch(`/deauth?ssid=${encodeURIComponent(ssid)}`)
+        .then(response => response.text())
+        .then(data => {
+          appendLog("Sending packets...");
+          let packetCount = 0;
+          const interval = setInterval(() => {
+            packetCount++;
+            appendLog(`Packet ${packetCount} sent`);
+            if (packetCount >= 32) {
+              clearInterval(interval);
+              appendLog("Successfully sent deauth packets.");
+              alert(data);
+            }
+          }, 200);
+        })
+        .catch(error => {
+          appendLog("Failed to start attack.");
+          console.error("Deauth error:", error);
+        });
+    }
+  </script>
+</body>
+</html>
